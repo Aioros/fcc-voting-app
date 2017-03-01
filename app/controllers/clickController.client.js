@@ -12,7 +12,7 @@
       clickNbr.innerHTML = clicksObject.clicks;
    }
 
-   ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, updateClickCount));
+   /*ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, updateClickCount));
 
    addButton.addEventListener('click', function () {
 
@@ -28,6 +28,6 @@
          ajaxFunctions.ajaxRequest('GET', apiUrl, updateClickCount);
       });
 
-   }, false);
+   }, false);*/
 
 })();

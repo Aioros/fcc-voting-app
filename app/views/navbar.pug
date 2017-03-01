@@ -1,0 +1,35 @@
+nav.navbar.navbar-default.navbar-fixed-top
+    .container
+        .navbar-header
+            button.navbar-toggle.collapsed(type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar")
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+        #navbar.navbar-collapse.collapse
+            ul.nav.navbar-nav
+                li
+                    a(href="/")
+                        |FCC Voting App 
+                        span.sr-only (current)
+            ul.nav.navbar-nav.navbar-right
+                li.auth-only
+                    a(href="/create") Create new poll
+                li.noauth-only
+                    a.login(onclick="window.open('/auth/twitter', '_blank', 'width=600,height=300');")
+                        .btn.btn-twitter#login-btn LOGIN WITH TWITTER
+                li.auth-only.dropdown
+                    a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false")
+                        |Logged in as 
+                        span#display-name
+                            if (user)
+                                |#{user.twitter.username}
+                        span.caret
+                    ul.dropdown-menu
+                        li
+                            a(href="/mypolls") My Polls
+                        li
+                            a(href="/create") Create new poll
+                        li.divider(role="separator")
+                        li
+                            a(href="/logout") Logout

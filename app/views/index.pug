@@ -1,0 +1,18 @@
+doctype html
+html
+    include head.pug
+        
+    body.home(class=user ? 'authed' : 'anon')
+        include navbar.pug
+
+        .container
+            h1.col-md-12 All polls
+            .polls
+                each poll, index in polls
+                    .col-xs-12.poll
+                        .poll-box
+                            a(href="polls/"+poll._id)
+                                h2.poll-title #{poll.title}
+
+        script(src="common/script.js")
+        script(src="controllers/pollController.client.js")

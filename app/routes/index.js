@@ -1,7 +1,8 @@
 'use strict';
 
 var path = process.cwd();
-var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
+var Poll = require(path + '/app/models/polls.js');
+var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 
 module.exports = function (app, passport) {
 
@@ -9,49 +10,70 @@ module.exports = function (app, passport) {
 		if (req.isAuthenticated()) {
 			return next();
 		} else {
-			res.redirect('/login');
+			res.redirect('/');
 		}
 	}
 
-	var clickHandler = new ClickHandler();
+	var pollHandler = new PollHandler();
 
 	app.route('/')
-		.get(isLoggedIn, function (req, res) {
-			res.sendFile(path + '/public/index.html');
-		});
-
-	app.route('/login')
 		.get(function (req, res) {
-			res.sendFile(path + '/public/login.html');
+			Poll.find().then(function(polls) {
+				res.render('index', {user: req.user, polls: polls});
+			});
 		});
 
 	app.route('/logout')
 		.get(function (req, res) {
 			req.logout();
-			res.redirect('/login');
+			res.redirect('back');
 		});
 
-	app.route('/profile')
+	app.route('/mypolls')
 		.get(isLoggedIn, function (req, res) {
-			res.sendFile(path + '/public/profile.html');
+			Poll.find({ '_author': req.user._id }).then(function(polls) {
+				res.render('mypolls', {user: req.user, polls: polls});
+			});
+		});
+		
+	app.route('/polls/:pollid')
+		.get(function (req, res) {
+			Poll.findOne({_id: req.params.pollid}).then(function(poll) {
+				res.render('poll', {user: req.user, poll: poll});
+			});
+		});
+		
+	app.route('/create')
+		.get(isLoggedIn, function(req, res) {
+			res.render('create', {user: req.user});
 		});
 
-	app.route('/api/:id')
-		.get(isLoggedIn, function (req, res) {
-			res.json(req.user.github);
-		});
+	app.route('/auth/twitter')
+		.get(passport.authenticate('twitter'));
 
-	app.route('/auth/github')
-		.get(passport.authenticate('github'));
-
-	app.route('/auth/github/callback')
-		.get(passport.authenticate('github', {
-			successRedirect: '/',
-			failureRedirect: '/login'
+	app.route('/auth/twitter/callback')
+		.get(passport.authenticate('twitter', {
+			successRedirect: '/public/afterauth.html',
+			failureRedirect: '/public/afterauth.html'
 		}));
-
-	app.route('/api/:id/clicks')
-		.get(isLoggedIn, clickHandler.getClicks)
-		.post(isLoggedIn, clickHandler.addClick)
-		.delete(isLoggedIn, clickHandler.resetClicks);
+	
+	app.route('/api/me')
+		.get(isLoggedIn, function (req, res) {
+			res.json(req.user.twitter);
+		});
+		
+	app.route('/api/polls/:pollid')
+		.post(pollHandler.addVote);
+	
+	app.route('/api/user/polls')
+		.get(isLoggedIn, pollHandler.getPolls)
+		.post(isLoggedIn, pollHandler.addPoll);
+		
+	app.route('/api/user/polls/:pollid')
+		//.get(isLoggedIn, pollHandler.getPoll)
+		.delete(isLoggedIn, pollHandler.deletePoll);
+		
+	app.route('/api/polls')
+		.get(pollHandler.getAllPolls);
+	
 };

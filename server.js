@@ -1,6 +1,7 @@
 'use strict';
 
 var express = require('express');
+var bodyParser = require('body-parser');
 var routes = require('./app/routes/index.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -16,6 +17,11 @@ mongoose.Promise = global.Promise;
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/common', express.static(process.cwd() + '/app/common'));
+
+app.set('views', process.cwd() + '/app/views');
+app.set('view engine', 'pug');
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
 	secret: 'secretClementine',

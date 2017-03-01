@@ -1,0 +1,20 @@
+doctype html
+html
+    include head.pug
+        
+    body.create(class=user ? 'authed' : 'anon')
+        include navbar.pug
+
+        .container
+            form
+                .form-group
+                    label(for="poll_title") Poll Title
+                    input.form-control(type="text" id="poll_title" name="poll_title" placeholder="Title")
+                .form-group.poll-options
+                    input.form-control.poll-option.placeholder(type="text" name="poll_option[]" placeholder="New Option")
+                .form-group
+                    input.btn.btn-primary(type="button" id="add_option" name="add_option" value="Add Option")
+                button.btn.btn-default#create Submit
+
+        script(src="common/script.js")
+        script(src="controllers/pollController.client.js")

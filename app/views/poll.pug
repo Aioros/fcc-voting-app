@@ -1,0 +1,27 @@
+doctype html
+html
+    include head.pug
+        
+    body.home(class=user ? 'authed' : 'anon')
+        include navbar.pug
+
+        .container(data-id=poll._id)
+            h1.col-md-12
+                span.poll-title #{poll.title}
+                if (user && user._id.equals(poll._author))
+                    button#delete.btn.btn-danger(data-id=poll._id) Delete This Poll
+                    a#share.btn.btn-twitter Share on Twitter
+            .options.col-md-6
+                each option, index in poll.options
+                    .col-md-12
+                        .option.form-control(data-id=option._id data-count=option.votes.length) #{option.text}
+                .col-md-10
+                    input.form-control#new_option(type="text" placeholder="New Option")
+                .col-md-2
+                    button.btn.btn-primary#vote Vote
+            .col-md-6
+                canvas#chart
+                
+        script(src="/common/script.js")
+        script(src="/controllers/pollController.client.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js")
