@@ -2,7 +2,7 @@ doctype html
 html
     include head.pug
         
-    body.home(class=user ? 'authed' : 'anon')
+    body.poll(class=user ? 'authed' : 'anon')
         include navbar.pug
 
         .container(data-id=poll._id)
